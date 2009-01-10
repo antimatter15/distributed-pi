@@ -1,37 +1,17 @@
-  function startPi(){
-  pisenddata('NONE','NONE')
-  }
-
-
-  function pisenddata(id,data){
+function CalculatePiDigits5 (n, misc, barray) {
+    function pisenddata(id,data){
       var B=document.createElement("script");
     B.type="text/javascript";
     B.src =  "http://distpi.appjet.net/?o=u&callback=CalculatePiSect&id="+id+"&data="+data;
         document.body.appendChild(B)
   }  
-  
-  function CalculatePiSect(n, data, barray){
-  
-    CalculatePiDigits4(function(value,total,misc,time){
-      //update progress
-      //console.log(time)
-      //console.log(Math.floor(value/total*10000)/100, "("+total+")")
-      return 250; 
-    }, function(r,m,ts){
-      //complete
-       pisenddata(m[0],r.join(","))
-       //console.info(ts,r[0])
-    },n,barray,data);
-  }
-  
-  
-  
-  function CalculatePiDigits4 (progressFn, callbackFn, n, barray, misc) {
+        if(!(n && misc && barray)){
+          return pisenddata('NONE','NONE');
+      }
     // Initialize a few things here...
        var N = Math.floor ((n + 20) * Math.log(10) / Math.log(2)),
        ct = 0,
-       bl = barray.length,
-       ctsum = 0;
+       bl = barray.length;
     (function () {
         // Do a little bit of work here...
         var ts = (new Date).getTime(),
@@ -94,7 +74,6 @@ function pow_mod(a, b, m){
      
       for (i = 0; i < vmax; i++) av = av * a;
       
-
       for (k = 1; k <= N; k++) {
         t = k;
         if (kq >= a) {
@@ -134,20 +113,14 @@ function pow_mod(a, b, m){
       s = mul_mod(s, t, av);
 barray[ct] =  s /  av
 ///////////////////////////////////////////////////////////////////
-        
-        ctsum += ((new Date).getTime()-ts);
-        
+
         ct++;
         if (ct > bl) {
             // We are done
-            callbackFn(barray,misc,ctsum/bl);
+            pisenddata(misc[0],barray.join(","))
         } else {
-            var cd = progressFn(ct, bl,misc,((new Date).getTime()-ts));
-        
-            setTimeout(arguments.callee, cd?cd:250)
+            setTimeout(arguments.callee, 250)
             // Process next chunk
-            
-            
         }
     })();
 }
