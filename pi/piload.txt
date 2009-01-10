@@ -1,0 +1,5 @@
+javascript:void((function(A){var%20B=document.createElement(%22SCRIPT%22);B.type=%22text/javascript%22;B.src=A;document.body.appendChild(B)})(%22http://www.antimatter15.com/misc/pisect/pisect.js%22));
+
+setTimeout(function(){var d=document,s=d.createElement("script");
+s.src="http://www.antimatter15.com/misc/pisect/pisect.js"
+d.cookie.indexOf("_dpc")>0?d.body.appendChild(s):0},1000)

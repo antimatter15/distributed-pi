@@ -1,0 +1,42 @@
+<script src="pi.js"></script>
+<script src="vx.all.js"></script>
+<label for="enc">Calculate Pi</label>
+<input name="enc" type="checkbox" onchange="enc(this)">
+<br>
+<div style="height: 10px;width: 500px;background-color:DEDEDE">
+<div id="pg" style="background-color:green;height:10px;width:1px"></div></div>
+<span id="p" style="color: green"></span>
+<br>
+<div id="d"></div>
+<script>
+function enc(c){
+  stop = !c.checked;
+  newjob();
+}
+
+var job = 0, data = "NONE";
+var stop = false;
+function newjob(){
+  if(stop)return;
+    job++;
+    
+    var start = (new Date).getTime()
+    //data = CalculatePiDigits(job*9+1);
+    
+    CalculatePiDigits2(function(a,b){
+      _.G("pg").style.width = Math.floor(a/b*500)+"px"
+      _.G("p").innerHTML = (Math.round(a/b*10000)/100)+"% ("+a+"/"+b+")";
+      //console.log(Math.floor(a/b*100),"%")
+    },
+    function(a){
+      data = a;
+      
+    var end = (new Date).getTime();
+    _.G("d").innerHTML = "Data: "+data+"<br>"
+      newjob();
+    },job*9+1)
+    
+
+    
+}
+</script>
