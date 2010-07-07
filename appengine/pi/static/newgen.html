@@ -1,0 +1,106 @@
+<script>
+  var a = 3;
+  var ns = 0;
+  var jbi = 0;
+  var jbc = [3]
+  //var jba = []
+  var ctr = 0;
+  var jbf = [];
+  
+function is_prime(n){
+  if((n % 2) == 0){
+    return false;
+  }
+  var r = Math.sqrt(n); //not necessary to floor
+  for(var i = 3; i <= r; i+=2){
+    if((n % i) == 0){
+      return false;
+    }
+  }
+  return true;
+}
+
+
+function next_prime(n){
+  do {
+    n++;
+  } while(!is_prime(n));
+  return n;
+}
+
+
+
+function autowoot(){
+  jbf = []
+  amabo();
+  publish();
+}
+
+
+function amabo(){
+  var newlimit = ctr+100
+  for(; ctr < newlimit; ctr++){
+    if(a >= ns){
+      jbf = jbf.concat(amasplit2(
+                          (jbi-1)*9+1,
+                          jbc.slice(0,ctr),
+                          ctr,
+                          jbi-1
+                          ))
+      
+      ns =  2 * Math.floor (((jbi++) * 9 + 1 + 20) * Math.log(10) / Math.log(2)); //logarithms FTW
+      
+    }
+    a = next_prime(a)
+    jbc.push(a)
+  }    
+}
+function amabo2(){
+  var newlimit = ctr+100
+  for(; ctr < newlimit; ctr++){
+    if(a >= ns){
+      jbf = jbf.concat(amasplit2(
+                          (jbi-1)*9+1,
+                          jbc.slice(0,ctr),
+                          ctr,
+                          jbi-1
+                          ))
+      
+      ns =  2 * Math.floor (((jbi++) * 9 + 1 + 20) * Math.log(10) / Math.log(2)); //logarithms FTW
+      
+    }else if(ctr % 25 == 0){
+      //do stuff
+      console.log(jbc[ctr-25])
+    }
+    a = next_prime(a)
+    jbc.push(a)
+  }    
+}
+
+
+function amasplit2(n, dat, dl, big){
+  for(var i = 0, jobs=[]; i < dl; i+= 25){
+    jobs.push([//n, //number key 
+               dat[i], //the data segment
+               Math.min(dl-i, 25), //the prime count
+               i, //the index
+               dl, //the total size
+               big //bigjob id
+               ])
+  }
+  return jobs
+}
+
+function publish(){
+document.getElementsByName("bulk")[0].value = jbf.join("*")
+}
+
+
+</script>
+
+<form target="tgt" action="/add" id="frm" method="post" style="float: right">
+  <textarea name="bulk" style="width: 400px; height: 300px"></textarea>
+  <button type="submit">Upload</button>
+</form>
+<button action="/add" method="post" onclick="autowoot()">AutoWoot</button>
+<iframe name="tgt" style="width: 300px; height: 400px"></iframe>

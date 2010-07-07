@@ -1,0 +1,46 @@
+<script>
+
+function is_prime(n){
+  if((n % 2) == 0){
+    return false;
+  }
+  var r = Math.sqrt(n); //not necessary to floor
+  for(var i = 3; i <= r; i+=2){
+    if((n % i) == 0){
+      return false;
+    }
+  }
+  return true;
+}
+
+function next_prime(n){
+  do {
+    n++;
+  } while(!is_prime(n));
+  return n;
+}
+
+function hire(n){
+n = n * 9 + 1
+var jobsize = 25;
+   var N = Math.floor ((n + 20) * Math.log(10) / Math.log(2));
+   var jobs = [];
+    for (var a = 3; a <= (2 * N); a = next_prime(a)) {
+      jobs.push(a);
+   }
+   for(var i = 0; i < jobs.length; i += jobsize){
+
+        console.log({
+                i: (Math.floor(Math.random()*99999)+'')+(n+'')+(i+''), //unique random ID
+                n: n, //bigjob ID
+                s: i, //subjob ID
+                l:  jobs.length, //size of job
+                b: jobs.slice(i, i+jobsize).join(","), //job contents
+                a: (new Date).getTime(), //assigned
+                d: false, //done?
+                v: -1 //value when computed
+            })   
+            
+    }
+}
+</script>

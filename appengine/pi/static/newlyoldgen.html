@@ -1,0 +1,110 @@
+<script>
+  var a = 3;
+  var ns = 0;
+  var jbi = 0;
+  var jbc = [3]
+  //var jba = []
+  var ctr = 0;
+  var jbf = [];
+  
+function is_prime(n){
+  if((n % 2) == 0){
+    return false;
+  }
+  var r = Math.sqrt(n); //not necessary to floor
+  for(var i = 3; i <= r; i+=2){
+    if((n % i) == 0){
+      return false;
+    }
+  }
+  return true;
+}
+
+function next_prime(n){
+  do {
+    n++;
+  } while(!is_prime(n));
+  return n;
+}
+
+
+function amabo(){
+  for(; ctr < 99; ctr++){
+    if(a >= ns){
+      jbf = jbf.concat(amasplit2(
+                          (jbi-1)*9+1,
+                          jbc.slice(0,ctr),
+                          ctr,
+                          jbi-1
+                          ))
+      
+      //jba.push([(jbi-1)*9+1,  jbc.slice(0,ctr)])
+      ns =  2 * Math.floor (((jbi++) * 9 + 1 + 20) * Math.log(10) / Math.log(2)); //logarithms FTW
+      
+    }
+    a = next_prime(a)
+    jbc.push(a)
+  }    
+}
+
+function amasplit2(n, dat, dl, big){
+  for(var i = 0, jobs=[]; i < dl; i+= 25){
+    jobs.push([//n, //number key 
+               dat[i], //the data segment
+               Math.min(dl-i, 25), //the prime count
+               i, //the index
+               dl, //the total size
+               big //bigjob id
+               ])
+  }
+  return jobs
+}
+
+function publish(){
+wk_send_data("/add", {bulk: jbf.join("*")}, function(){})
+}
+
+
+function wk_send_data(url, params, callback){
+  var id = "wk_xfnx"+Math.floor(Math.random()*12345)
+  var div = document.createElement("div");
+  var form = document.createElement("form");
+
+  document.body.appendChild(div);  
+  
+  window['fn'+id] = function(){
+    callback();
+    try{
+      window['fn'+id] = null;
+      delete window['fn'+id];
+    }catch(err){}
+    setTimeout(function(){
+      if(div.parentNode){
+        //div.parentNode.removeChild(div);
+      }
+    }, 50000)
+  };
+  
+  //div.style.display = "none";
+  
+  div.innerHTML = "<iframe id=\""+id+"\" name=\""+id+"\" onload=\"window['fn"+id+"']()\"></iframe>"
+  
+  form.target = id;
+  form.action = url;
+  form.method = "POST";
+  
+  div.appendChild(form);  
+  
+  for(var key in params){
+    var input = document.createElement("input"); //create new input
+    input.type = "hidden"; //it's hidden! SSH!!!!
+    input.name = key; //set name
+    input.value = params[key]; //set value
+    form.appendChild(input);
+  }
+  
+  form.submit();
+}
+
+
+</script>
