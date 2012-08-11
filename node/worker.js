@@ -16,7 +16,7 @@ function inv_mod(x, y) {
         t = u;
         u = v - q * u;
         v = t;
-    } while (u != 0)
+    } while (u != 0);
     a = a % y;
     if (a < 0) {
         a = y + a
@@ -117,7 +117,6 @@ function next_prime(n) {
 
 
 function report_job(n, sum, legacy, duration){
-	// postMessage([n, sum, legacy])
 	query_server([n, sum, legacy])
 	if(legacy > 0) enlist(n, legacy, duration);
 }
@@ -135,11 +134,6 @@ function enlist(n, a, duration){
     }
     return report_job(n, sum % 1, 0, duration); //0 means the job was completed
 }
-// onmessage = function(e){
-// 	enlist(e.data[0], e.data[1], e.data[2])
-// }
-
-// postMessage([])
 
 function query_server(data){
 	var xhr = new XMLHttpRequest();
