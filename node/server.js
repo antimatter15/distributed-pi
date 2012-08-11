@@ -1,5 +1,5 @@
 var digit_store = "pi.txt";
-var job_duration = 1000;
+var job_duration = 10000;
 
 var fs = require('fs');
 var saved_size = fs.statSync(digit_store).size;
@@ -32,9 +32,9 @@ function save_job(n, sum, legacy){
 		queue[n].legacy = legacy;
 		if(legacy == 0){
 			digits[n] = (Math.floor((queue[n].sum % 1.0) * 1e9)/1e9).toFixed(9).slice(2)
-			console.log('completed digit', n, digits[n])
-			write_digits();
 			delete queue[n];
+			console.log('completed digit', n, digits[n], Object.keys(digits).length, "unwritten", Object.keys(queue).length, "queued")
+			write_digits();
 			return schedule_job()
 		}else{
 			// console.log('continue', queue)
@@ -72,20 +72,52 @@ function schedule_job(){
 var http = require('http');
 var url = require('url');
 http.createServer(function (req, res) {
-	res.writeHead(200, {
-		'Content-Type': 'text/plain', 
-		'Access-Control-Allow-Origin': '*'
-	});
-	var data = JSON.parse(url.parse(req.url, true).query.data);
-	if(data.length == 3){
-		var new_job = save_job(data[0], data[1], data[2]);
-		if(new_job){
-			res.end(JSON.stringify(new_job));
-		}else{
-			res.end('[]');
+	var page = url.parse(req.url, true);
+	
+	if(page.pathname == "/task"){
+		res.writeHead(200, {
+			'Content-Type': 'application/json', 
+			'Access-Control-Allow-Origin': '*'
+		});
+		var data = JSON.parse(page.query.data);
+		if(data.length == 3){
+			var new_job = save_job(data[0], data[1], data[2]);
+			if(new_job){
+				res.end(JSON.stringify(new_job));
+			}else{
+				res.end('[]');
+			}
+		}else if(data.length == 0){
+			res.end(JSON.stringify(schedule_job()))
 		}
-	}else if(data.length == 0){
-		res.end(JSON.stringify(schedule_job()))
+	}else if(page.pathname == "/worker.js"){
+		res.writeHead(200, {
+			'Content-Type': 'text/javascript', 
+			'Access-Control-Allow-Origin': '*'
+		});
+		fs.readFile('worker.js', 'utf8', function(err, data){
+			if(err) throw err;
+
+			res.end(data.replace('__AUTOINSERT_SCHEDULER__', '//' + req.headers.host + '/task'))
+		})
+	}else if(page.pathname == "/pi"){
+		res.writeHead(200, {
+			'Content-Type': 'text/plain', 
+			'Access-Control-Allow-Origin': '*'
+		});
+		fs.readFile('pi.txt', 'utf8', function(err, data){
+			if(err) throw err;
+			res.end("3." + data)
+		})
+	}else{
+		res.writeHead(200, {
+			'Content-Type': 'text/html', 
+			'Access-Control-Allow-Origin': '*'
+		});
+		fs.readFile('demo.html', 'utf8', function(err, data){
+			if(err) throw err;
+			res.end(data);
+		})
 	}
 
 }).listen(1337);

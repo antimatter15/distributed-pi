@@ -1,3 +1,5 @@
+var scheduler = '__AUTOINSERT_SCHEDULER__';
+
 function mul_mod(a, b, m) {
     return (a * b) % m;
 }
@@ -131,13 +133,14 @@ function enlist(n, a, duration){
 		}
 		sum += process_job(a, n);
 		a = next_prime(a);
+		postMessage([a, 2 * N]);
     }
     return report_job(n, sum % 1, 0, duration); //0 means the job was completed
 }
 
 function query_server(data){
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', 'http://localhost:1337/task?data='+encodeURIComponent(JSON.stringify(data)), true);
+	xhr.open('GET', scheduler + '?data='+encodeURIComponent(JSON.stringify(data)), true);
 	xhr.onload = function(){
 		var e = JSON.parse(xhr.responseText);
 		// postMessage(xhr.responseText);

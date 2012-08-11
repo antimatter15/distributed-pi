@@ -1,4 +1,8 @@
-<button onclick="pi.terminate()">KILL WORKERS</button>
+<button onclick="pi.terminate()">KILL ALL WORKERS</button>
+<progress id="compute"></progress>
 <script>
-var pi = new Worker('worker.js')
+var pi = new Worker('worker.js');
+pi.onmessage = function(e){
+	document.getElementById('compute').value = e.data[0] / e.data[1]
+}
 </script>
